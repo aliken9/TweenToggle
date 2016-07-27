@@ -1,0 +1,14 @@
+# Unity3D .gitignore file.
+.DS_Store
+*.csproj
+*.unityproj
+*.pidb
+*.sln
+*.userprefs
+*.sublime-project
+*.sublime-workspace
+*.suo
+TweenToggle/Library
+TweenToggle/Temp
+TweenToggle/Assets/Editor/mod_pbxproj.pyc
+TweenToggle/Assets/Editor/mod_pbxproj.pyc.meta
