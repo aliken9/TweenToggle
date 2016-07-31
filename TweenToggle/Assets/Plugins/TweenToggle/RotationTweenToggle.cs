@@ -51,7 +51,7 @@ public class RotationTweenToggle : TweenToggle {
 				if(showingPos.x != 0f || showingPos.z != 0f){
 					Debug.LogWarning("GUI rotation will only rotate z-axis");
 				}
-				LeanTween.rotate(GUIRectTransform, showingPos.z, time)
+				LeanTween.rotateLocal(gameObject, new Vector3(0, 0, showingPos.z), time)	// Special case for GUI rotation
 					.setEase(easeShow)
 						.setDelay(showDelay)
 							.setUseEstimatedTime(isUseEstimatedTime)
@@ -78,7 +78,7 @@ public class RotationTweenToggle : TweenToggle {
 				if(showingPos.x != 0f || showingPos.z != 0f){
 					Debug.LogWarning("GUI rotation will only rotate z-axis");
 				}
-				LeanTween.rotate(GUIRectTransform, hiddenPos.z, time)
+				LeanTween.rotateLocal(gameObject, new Vector3(0, 0, hiddenPos.z), time)
 					.setEase(easeHide)
 						.setDelay(hideDelay)
 							.setUseEstimatedTime(isUseEstimatedTime)

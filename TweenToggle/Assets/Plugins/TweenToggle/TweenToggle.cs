@@ -31,8 +31,8 @@ public class TweenToggle : MonoBehaviour{
 	public float hideDuration = 0.5f;
 	public float showDelay = 0.0f;
 	public float hideDelay = 0.0f;
-	public LeanTweenType easeHide = LeanTweenType.easeInOutQuad;
 	public LeanTweenType easeShow = LeanTweenType.easeInOutQuad;
+	public LeanTweenType easeHide = LeanTweenType.easeInOutQuad;
 	protected Vector3 hiddenPos;
 	protected Vector3 showingPos;
 	public bool isUseEstimatedTime = false;
@@ -51,17 +51,6 @@ public class TweenToggle : MonoBehaviour{
 	public GameObject HideTarget;
 	public string HideFunctionName;
 	public bool HideIncludeChildren = false;
-	
-	//////////////////////////////////////////////////////
-	
-	// sounds to be played when this object tweens in or out.
-	// we might want these to get fancier at some point (i.e. start the sound when the object tweens in, or when it finishes, etc)
-	public string strSoundShow;
-	public string strSoundHide;
-	
-	// Testing purposes, isDebug true will show OnGUI buttons
-	public bool isDebug = false;
-	public Vector2 testButtonPos; 	// Set base positions of test buttons
 
 	protected bool isGUI;				// Check if Unity GUI, will be set on awake
 	protected RectTransform GUIRectTransform;	// Local cache of rect transform if GUI
@@ -89,17 +78,6 @@ public class TweenToggle : MonoBehaviour{
 	public virtual void Reset(){
 		// Implement in child
 	}
-
-//	void OnGUI(){
-//		if(isDebug){
-//			if(GUI.Button(new Rect(testButtonPos.x, testButtonPos.y, 100, 100), "show")){
-//				Show();
-//			}
-//			if(GUI.Button(new Rect(testButtonPos.x + 110, testButtonPos.y, 100, 100), "hide")){
-//				Hide();
-//			}
-//		}
-//	}
 
 	public void Show(){
 		Show(showDuration);
