@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿//// Copyright (c) Thalassian Studios
+using UnityEngine;
 using UnityEngine.UI;
 
 public class AlphaTweenToggle : TweenToggle {

@@ -1,5 +1,4 @@
-﻿//// Copyright (c) 2015 LifeGuard Games Inc.
-
+﻿//// Copyright (c) Thalassian Studios
 using UnityEngine;
 using System.Collections;
 
