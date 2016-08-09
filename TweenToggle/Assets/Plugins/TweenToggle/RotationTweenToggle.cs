@@ -45,24 +45,26 @@ public class RotationTweenToggle : TweenToggle {
 			isShown = true;
 			isMoving = true;
 
-			LeanTween.cancel(gameObject);
+			LeanTween.cancel(tweenID);
 
 			if(isGUI){
 				if(showingPos.x != 0f || showingPos.z != 0f){
 					Debug.LogWarning("GUI rotation will only rotate z-axis");
 				}
-				LeanTween.rotateLocal(gameObject, new Vector3(0, 0, showingPos.z), time)	// Special case for GUI rotation
+				tweenID = LeanTween.rotateLocal(gameObject, new Vector3(0, 0, showingPos.z), time)	// Special case for GUI rotation
 					.setEase(easeShow)
-						.setDelay(showDelay)
-							.setUseEstimatedTime(isUseEstimatedTime)
-								.setOnComplete(ShowSendCallback);
+					.setDelay(showDelay)
+					.setUseEstimatedTime(isUseEstimatedTime)
+					.setOnComplete(ShowSendCallback)
+					.id;
 			}
 			else{
-				LeanTween.rotateLocal(gameObject, showingPos, time)
+				tweenID = LeanTween.rotateLocal(gameObject, showingPos, time)
 					.setEase(easeShow)
-						.setDelay(showDelay)
-							.setUseEstimatedTime(isUseEstimatedTime)
-								.setOnComplete(ShowSendCallback);
+					.setDelay(showDelay)
+					.setUseEstimatedTime(isUseEstimatedTime)
+					.setOnComplete(ShowSendCallback)
+					.id;
 			}
 		}
 	}
@@ -72,24 +74,26 @@ public class RotationTweenToggle : TweenToggle {
 			isShown = false;
 			isMoving = true;
             
-			LeanTween.cancel(gameObject);
+			LeanTween.cancel(tweenID);
 
 			if(isGUI){
 				if(showingPos.x != 0f || showingPos.z != 0f){
 					Debug.LogWarning("GUI rotation will only rotate z-axis");
 				}
-				LeanTween.rotateLocal(gameObject, new Vector3(0, 0, hiddenPos.z), time)
+				tweenID = LeanTween.rotateLocal(gameObject, new Vector3(0, 0, hiddenPos.z), time)
 					.setEase(easeHide)
-						.setDelay(hideDelay)
-							.setUseEstimatedTime(isUseEstimatedTime)
-								.setOnComplete(ShowSendCallback);
+					.setDelay(hideDelay)
+					.setUseEstimatedTime(isUseEstimatedTime)
+					.setOnComplete(ShowSendCallback)
+					.id;
 			}
 			else{
-				LeanTween.rotateLocal(gameObject, hiddenPos, time)
+				tweenID = LeanTween.rotateLocal(gameObject, hiddenPos, time)
 					.setEase(easeHide)
-						.setDelay(hideDelay)
-							.setUseEstimatedTime(isUseEstimatedTime)
-								.setOnComplete(HideSendCallback);
+					.setDelay(hideDelay)
+					.setUseEstimatedTime(isUseEstimatedTime)
+					.setOnComplete(HideSendCallback)
+					.id;
 			}
 		}
 	}

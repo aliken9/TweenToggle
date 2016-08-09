@@ -45,13 +45,15 @@ public class TweenToggleDemux : MonoBehaviour{
 		}
 
 		foreach(GameObject go in GoList){
-			TweenToggle toggle = go.GetComponent<TweenToggle>();
-			if(toggle != null){
-				if(startsHidden){
-					toggle.startsHidden = true;	// TweenToggle Start() will take care of setting position
-				}
-				else{
-					toggle.startsHidden = false;
+			TweenToggle[] toggleList = go.GetComponents<TweenToggle>();
+			foreach(TweenToggle toggle in toggleList){
+				if(toggle != null){
+					if(startsHidden){
+						toggle.startsHidden = true;	// TweenToggle Start() will take care of setting position
+					}
+					else{
+						toggle.startsHidden = false;
+					}
 				}
 			}
 		}
@@ -70,9 +72,11 @@ public class TweenToggleDemux : MonoBehaviour{
 			UIRayCastBlock.blocksRaycasts = startsHidden ? false : true;
 		}
 		foreach(GameObject go in GoList){
-			TweenToggle toggle = go.GetComponent<TweenToggle>();
-			toggle.startsHidden = startsHidden;
-			toggle.Reset();
+			TweenToggle[] toggleList = go.GetComponents<TweenToggle>();
+			foreach(TweenToggle toggle in toggleList){
+				toggle.startsHidden = startsHidden;
+				toggle.Reset();
+			}
 		}
 	}
 	
@@ -156,9 +160,11 @@ public class TweenToggleDemux : MonoBehaviour{
 		yield return 0;
 		
 		foreach(GameObject go in GoList){
-			TweenToggle toggle = go.GetComponent<TweenToggle>();
-			if(toggle != null){
-				toggle.Show();
+			TweenToggle[] toggleList = go.GetComponents<TweenToggle>();
+			foreach(TweenToggle toggle in toggleList){
+				if(toggle != null){
+					toggle.Show();
+				}
 			}
 		}
 		
@@ -172,15 +178,17 @@ public class TweenToggleDemux : MonoBehaviour{
 		yield return 0;
 		
 		foreach(GameObject go in GoList){
-			TweenToggle toggle = go.GetComponent<TweenToggle>();
-			if(toggle != null){
-				if(hideImmediately){
-					//Debug.Log(" -- - - HIDE BOOLEAN TRUE");
-					// TODO Need to call last hide object last!!!!
-					toggle.hideDuration = 0f;
-					toggle.hideDelay = 0f;
+			TweenToggle[] toggleList = go.GetComponents<TweenToggle>();
+			foreach(TweenToggle toggle in toggleList){
+				if(toggle != null){
+					if(hideImmediately){
+						//Debug.Log(" -- - - HIDE BOOLEAN TRUE");
+						// TODO Need to call last hide object last!!!!
+						toggle.hideDuration = 0f;
+						toggle.hideDelay = 0f;
+					}
+					toggle.Hide();
 				}
-				toggle.Hide();
 			}
 		}
 		
@@ -189,18 +197,6 @@ public class TweenToggleDemux : MonoBehaviour{
 			HideSendCallback();
 		}
 	}
-
-//	 void OnGUI(){
-//	 	 if(isDebug){
-//	 	 	if(GUI.Button(new Rect(testButtonPos.x, testButtonPos.y, 100, 100), "show")){
-//	 	 		Show();
-//	 	 	}
-//	 	 	if(GUI.Button(new Rect(testButtonPos.x + 110, testButtonPos.y, 100, 100), "hide")){
-//				Debug.Log("HIDE button");
-//	 	 		Hide();
-//	 	 	}
-//	 	 }
-//	 }
 	
 	void ShowSendCallback(){
 		if(string.IsNullOrEmpty(ShowFunctionName)){

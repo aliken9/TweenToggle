@@ -15,6 +15,7 @@ public class TweenToggle : MonoBehaviour{
 		get{ return isMoving; }
 	}
 
+	[SerializeField]
 	protected bool isShown;
 	public bool IsShown{
 		get{ return isShown; }
@@ -54,6 +55,8 @@ public class TweenToggle : MonoBehaviour{
 
 	protected bool isGUI;				// Check if Unity GUI, will be set on awake
 	protected RectTransform GUIRectTransform;	// Local cache of rect transform if GUI
+
+	protected int tweenID = -1;
 
 	protected void Awake(){
 		GUIRectTransform = gameObject.GetComponent<RectTransform>();
@@ -106,7 +109,8 @@ public class TweenToggle : MonoBehaviour{
 	}
 
 	///////////////////////// CALLBACKS ///////////////////////////////
-	protected void ShowSendCallback(){	
+	protected void ShowSendCallback(){
+		tweenID = -1;
 		isMoving = false;
 		if(string.IsNullOrEmpty(ShowFunctionName)){
 			return;
@@ -127,6 +131,7 @@ public class TweenToggle : MonoBehaviour{
 	}
 
 	protected void HideSendCallback(){
+		tweenID = -1;
 		isMoving = false;
 		if(string.IsNullOrEmpty(HideFunctionName)){
 			return;

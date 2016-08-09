@@ -54,15 +54,16 @@ public class AlphaTweenToggle : TweenToggle {
 		if(!isShown){
 			isShown = true;
 			isMoving = true;
-			
-			LeanTween.cancel(gameObject);
+
+			LeanTween.cancel(tweenID);
 			
 			if(isGUI){
-				LeanTween.alpha(GUIRectTransform, showingAlpha, time)
+				tweenID = LeanTween.alpha(GUIRectTransform, showingAlpha, time)
 					.setEase(easeShow)
-						.setDelay(showDelay)
-						.setUseEstimatedTime(isUseEstimatedTime)
-						.setOnComplete(ShowSendCallback);
+					.setDelay(showDelay)
+					.setUseEstimatedTime(isUseEstimatedTime)
+					.setOnComplete(ShowSendCallback)
+					.id;
 			}
 			else{
 				Debug.LogWarning("Tween alpha not implemented");
@@ -79,23 +80,25 @@ public class AlphaTweenToggle : TweenToggle {
 		if(isShown){
 			isShown = false;
 			isMoving = true;
-			
-			LeanTween.cancel(gameObject);
+
+			LeanTween.cancel(tweenID);
 			
 			if(isGUI){
-				LeanTween.alpha(GUIRectTransform, hiddenAlpha, time)
+				tweenID = LeanTween.alpha(GUIRectTransform, hiddenAlpha, time)
 					.setEase(easeHide)
-						.setDelay(hideDelay)
-						.setUseEstimatedTime(isUseEstimatedTime)
-						.setOnComplete(HideSendCallback);
+					.setDelay(hideDelay)
+					.setUseEstimatedTime(isUseEstimatedTime)
+					.setOnComplete(HideSendCallback)
+					.id;
 			}
 			else{
 				Debug.LogWarning("Tween alpha not implemented");
 //				LeanTween.alpha(gameObject, hiddenAlpha, time)
 //					.setEase(easeHide)
-//						.setDelay(hideDelay)
-//						.setUseEstimatedTime(isUseEstimatedTime)
-//						.setOnComplete(HideSendCallback);
+//					.setDelay(hideDelay)
+//					.setUseEstimatedTime(isUseEstimatedTime)
+//					.setOnComplete(HideSendCallback)
+//					.id;
 			}
 		}
 	}
