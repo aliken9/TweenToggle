@@ -7,26 +7,32 @@ using System.Collections;
 /// Child of TweenToggle parent, Takes care of translation toggles
 /// </summary>
 public class PositionTweenToggle : TweenToggle {
-	
+	[Header("Tween Delta")]
+	public float hideDeltaX;
+	public float hideDeltaY;
+	public float hideDeltaZ;
+
+	protected Vector3 hiddenPosition;
+	protected Vector3 showingPosition;
+
 	protected override void RememberPositions(){
 		if(isGUI){
-			showingPos = GUIRectTransform.anchoredPosition3D;
-			hiddenPos = GUIRectTransform.anchoredPosition3D + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
-
+			showingPosition = GUIRectTransform.anchoredPosition3D;
+			hiddenPosition = GUIRectTransform.anchoredPosition3D + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
 		}
 		else{
-			showingPos = gameObject.transform.localPosition;
-			hiddenPos = gameObject.transform.localPosition + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
+			showingPosition = gameObject.transform.localPosition;
+			hiddenPosition = gameObject.transform.localPosition + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
 		}
 	}
 	
 	public override void Reset(){
 		if(startsHidden){
 			if(isGUI){
-				GUIRectTransform.anchoredPosition3D = hiddenPos;
+				GUIRectTransform.anchoredPosition3D = hiddenPosition;
 			}
 			else{
-				gameObject.transform.localPosition = hiddenPos;
+				gameObject.transform.localPosition = hiddenPosition;
 			}
 			
 		 	// Need to call show first
@@ -48,19 +54,19 @@ public class PositionTweenToggle : TweenToggle {
 			LeanTween.cancel(tweenID);
 
 			if(isGUI){
-				tweenID = LeanTween.move(GUIRectTransform, showingPos, time)
-					.setEase(easeShow)
+				tweenID = LeanTween.move(GUIRectTransform, showingPosition, time)
+					.setEase(showEase)
 					.setDelay(showDelay)
-					.setUseEstimatedTime(isUseEstimatedTime)
+					.setUseEstimatedTime(useEstimatedTime)
 					.setOnComplete(ShowSendCallback)
 					.id;
 
 			}
 			else{
-				tweenID = LeanTween.moveLocal(gameObject, showingPos, time)
-					.setEase(easeShow)
+				tweenID = LeanTween.moveLocal(gameObject, showingPosition, time)
+					.setEase(showEase)
 					.setDelay(showDelay)
-					.setUseEstimatedTime(isUseEstimatedTime)
+					.setUseEstimatedTime(useEstimatedTime)
 					.setOnComplete(ShowSendCallback)
 					.id;
 			}
@@ -75,18 +81,18 @@ public class PositionTweenToggle : TweenToggle {
 			LeanTween.cancel(tweenID);
 
 			if(isGUI){
-				tweenID = LeanTween.move(GUIRectTransform, hiddenPos, time)
-					.setEase(easeHide)
+				tweenID = LeanTween.move(GUIRectTransform, hiddenPosition, time)
+					.setEase(hideEase)
 					.setDelay(hideDelay)
-					.setUseEstimatedTime(isUseEstimatedTime)
+					.setUseEstimatedTime(useEstimatedTime)
 					.setOnComplete(HideSendCallback)
 					.id;
 			}
 			else{
-				tweenID = LeanTween.moveLocal(gameObject, hiddenPos, time)
-					.setEase(easeHide)
+				tweenID = LeanTween.moveLocal(gameObject, hiddenPosition, time)
+					.setEase(hideEase)
 					.setDelay(hideDelay)
-					.setUseEstimatedTime(isUseEstimatedTime)
+					.setUseEstimatedTime(useEstimatedTime)
 					.setOnComplete(HideSendCallback)
 					.id;
 			}

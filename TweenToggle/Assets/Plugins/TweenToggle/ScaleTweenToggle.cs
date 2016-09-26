@@ -3,29 +3,36 @@ using UnityEngine;
 using System.Collections;
 
 /// <summary>
-/// Position tween toggle.
-/// Child of TweenToggle parent, Takes care of translation toggles
+/// Scale tween toggle.
+/// Child of TweenToggle parent, Takes care of scale toggles
 /// </summary>
 public class ScaleTweenToggle : TweenToggle {
+	[Header("Tween Delta")]
+	public float hideDeltaX;
+	public float hideDeltaY;
+	public float hideDeltaZ;
+
+	protected Vector3 hiddenScale;
+	protected Vector3 showingScale;
 	
 	protected override void RememberPositions(){
 		if(isGUI){
-			showingPos = GUIRectTransform.localScale;
-			hiddenPos = GUIRectTransform.localScale + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
+			showingScale = GUIRectTransform.localScale;
+			hiddenScale = GUIRectTransform.localScale + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
 		}
 		else{
-			showingPos = gameObject.transform.localScale;
-			hiddenPos = gameObject.transform.localScale + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
+			showingScale = gameObject.transform.localScale;
+			hiddenScale = gameObject.transform.localScale + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
 		}
 	}
 	
 	public override void Reset(){
 		if (startsHidden){
 			if(isGUI){
-				GUIRectTransform.localScale = hiddenPos;
+				GUIRectTransform.localScale = hiddenScale;
 			}
 			else{
-				gameObject.transform.localScale = hiddenPos;
+				gameObject.transform.localScale = hiddenScale;
 			}
 			
 		 	// Need to call show first
@@ -47,18 +54,18 @@ public class ScaleTweenToggle : TweenToggle {
 			LeanTween.cancel(tweenID);
 
 			if(isGUI){
-				tweenID = LeanTween.scale(GUIRectTransform, showingPos, time)
-					.setEase(easeShow)
+				tweenID = LeanTween.scale(GUIRectTransform, showingScale, time)
+					.setEase(showEase)
 					.setDelay(showDelay)
-					.setUseEstimatedTime(isUseEstimatedTime)
+					.setUseEstimatedTime(useEstimatedTime)
 					.setOnComplete(ShowSendCallback)
 					.id;
 			}
 			else{
-				tweenID = LeanTween.scale(gameObject, showingPos, time)
-					.setEase(easeShow)
+				tweenID = LeanTween.scale(gameObject, showingScale, time)
+					.setEase(showEase)
 					.setDelay(showDelay)
-					.setUseEstimatedTime(isUseEstimatedTime)
+					.setUseEstimatedTime(useEstimatedTime)
 					.setOnComplete(ShowSendCallback)
 					.id;
 			}
@@ -73,18 +80,18 @@ public class ScaleTweenToggle : TweenToggle {
 			LeanTween.cancel(tweenID);
 
 			if(isGUI){
-				tweenID = LeanTween.scale(GUIRectTransform, hiddenPos, time)
-					.setEase(easeHide)
+				tweenID = LeanTween.scale(GUIRectTransform, hiddenScale, time)
+					.setEase(hideEase)
 					.setDelay(hideDelay)
-					.setUseEstimatedTime(isUseEstimatedTime)
+					.setUseEstimatedTime(useEstimatedTime)
 					.setOnComplete(HideSendCallback)
 					.id;
 			}
 			else{
-				tweenID = LeanTween.scale(gameObject, hiddenPos, time)
-					.setEase(easeHide)
+				tweenID = LeanTween.scale(gameObject, hiddenScale, time)
+					.setEase(hideEase)
 					.setDelay(hideDelay)
-					.setUseEstimatedTime(isUseEstimatedTime)
+					.setUseEstimatedTime(useEstimatedTime)
 					.setOnComplete(HideSendCallback)
 					.id;
 			}

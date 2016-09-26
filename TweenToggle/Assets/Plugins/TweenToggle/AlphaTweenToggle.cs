@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class AlphaTweenToggle : TweenToggle {
+	[Header("Tween Delta")]
 	public float hideDeltaAlpha;
 
 	private float showingAlpha;
@@ -15,8 +16,6 @@ public class AlphaTweenToggle : TweenToggle {
 		}
 		else{
 			Debug.LogWarning("Tween alpha not implemented");
-//			showingAlpha = GUIRectTransform.GetComponent<Image>().color.a;
-//			hiddenAlpha = showingAlpha - hideDeltaAlpha;
 		}
 
 		// Sanity check on hidden alpha values, sometimes we want to override simply
@@ -37,7 +36,6 @@ public class AlphaTweenToggle : TweenToggle {
 			}
 			else{
 				Debug.LogWarning("Tween alpha not implemented");
-//				gameObject.transform.localPosition = hiddenPos;
 			}
 			
 			// Need to call show first
@@ -60,19 +58,14 @@ public class AlphaTweenToggle : TweenToggle {
 			
 			if(isGUI){
 				tweenID = LeanTween.alpha(GUIRectTransform, showingAlpha, time)
-					.setEase(easeShow)
+					.setEase(showEase)
 					.setDelay(showDelay)
-					.setUseEstimatedTime(isUseEstimatedTime)
+					.setUseEstimatedTime(useEstimatedTime)
 					.setOnComplete(ShowSendCallback)
 					.id;
 			}
 			else{
 				Debug.LogWarning("Tween alpha not implemented");
-//				LeanTween.alpha(gameObject, showingAlpha, time)
-//					.setEase(easeShow)
-//						.setDelay(showDelay)
-//						.setUseEstimatedTime(isUseEstimatedTime)
-//						.setOnComplete(ShowSendCallback);
 			}
 		}
 	}
@@ -86,20 +79,14 @@ public class AlphaTweenToggle : TweenToggle {
 			
 			if(isGUI){
 				tweenID = LeanTween.alpha(GUIRectTransform, hiddenAlpha, time)
-					.setEase(easeHide)
+					.setEase(hideEase)
 					.setDelay(hideDelay)
-					.setUseEstimatedTime(isUseEstimatedTime)
+					.setUseEstimatedTime(useEstimatedTime)
 					.setOnComplete(HideSendCallback)
 					.id;
 			}
 			else{
 				Debug.LogWarning("Tween alpha not implemented");
-//				LeanTween.alpha(gameObject, hiddenAlpha, time)
-//					.setEase(easeHide)
-//					.setDelay(hideDelay)
-//					.setUseEstimatedTime(isUseEstimatedTime)
-//					.setOnComplete(HideSendCallback)
-//					.id;
 			}
 		}
 	}

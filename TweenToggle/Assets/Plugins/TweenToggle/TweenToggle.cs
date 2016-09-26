@@ -1,5 +1,4 @@
-﻿//// Copyright (c) 2015 LifeGuard Games Inc.
-
+﻿//// Copyright (c) Thalassian Studios
 using UnityEngine;
 using System.Collections;
 
@@ -15,7 +14,6 @@ public class TweenToggle : MonoBehaviour{
 		get{ return isMoving; }
 	}
 
-	[SerializeField]
 	protected bool isShown;
 	public bool IsShown{
 		get{ return isShown; }
@@ -25,48 +23,34 @@ public class TweenToggle : MonoBehaviour{
 	
 	public bool isUsingDemultiplexer = false;
 	public bool startsHidden = false;
-	public float hideDeltaX; //Position, Scale, or Rotation depending on subclass
-	public float hideDeltaY;
-	public float hideDeltaZ;
-	public float showDuration = 0.5f;
-	public float hideDuration = 0.5f;
-	public float showDelay = 0.0f;
-	public float hideDelay = 0.0f;
-	public LeanTweenType easeShow = LeanTweenType.easeInOutQuad;
-	public LeanTweenType easeHide = LeanTweenType.easeInOutQuad;
-	protected Vector3 hiddenPos;
-	protected Vector3 showingPos;
-	public bool isUseEstimatedTime = false;
-	public Vector3 GetShowPos(){
-		return showingPos;
-	}
+	public bool useEstimatedTime = false;
 
-	protected bool positionSet;
+	[Header("Timing and Easing")]
+	public float showDelay = 0.0f;
+	public float showDuration = 0.5f;
+	public LeanTweenType showEase = LeanTweenType.easeInOutQuad;
+	[Space(10)]
+	public float hideDelay = 0.0f;
+	public float hideDuration = 0.5f;
+	public LeanTweenType hideEase = LeanTweenType.easeInOutQuad;
 	
 	//////////////////////////////////////////////////////
 	
-	// Finish tween callback operations
-	public GameObject ShowTarget;
+	[Header("Tween Complete Callback")]
+	public GameObject ShowDoneTarget;
 	public string ShowFunctionName;
-	public bool ShowIncludeChildren = false;
-	public GameObject HideTarget;
+	[Space(10)]
+	public GameObject HideDoneTarget;
 	public string HideFunctionName;
-	public bool HideIncludeChildren = false;
 
-	protected bool isGUI;				// Check if Unity GUI, will be set on awake
+	protected bool isGUI;						// Check if Unity GUI, will be set on awake
 	protected RectTransform GUIRectTransform;	// Local cache of rect transform if GUI
 
 	protected int tweenID = -1;
 
 	protected void Awake(){
 		GUIRectTransform = gameObject.GetComponent<RectTransform>();
-		if(GUIRectTransform != null){
-			isGUI = true;
-		}
-		else{
-			isGUI = false;
-		}
-
+		isGUI = GUIRectTransform != null ? true : false;
 		RememberPositions();
 	}
 	
@@ -115,19 +99,10 @@ public class TweenToggle : MonoBehaviour{
 		if(string.IsNullOrEmpty(ShowFunctionName)){
 			return;
 		}
-		if(ShowTarget == null){
-			ShowTarget = gameObject;
+		if(ShowDoneTarget == null){
+			ShowDoneTarget = gameObject;
 		}
-		if(ShowIncludeChildren){
-			Transform[] transforms = ShowTarget.GetComponentsInChildren<Transform>();
-			for(int i = 0, imax = transforms.Length; i < imax; ++i){
-				Transform t = transforms[i];
-				t.gameObject.SendMessage(ShowFunctionName, gameObject, SendMessageOptions.DontRequireReceiver);
-			}
-		}
-		else{
-			ShowTarget.SendMessage(ShowFunctionName, gameObject, SendMessageOptions.DontRequireReceiver);
-		}
+		ShowDoneTarget.SendMessage(ShowFunctionName, gameObject, SendMessageOptions.DontRequireReceiver);
 	}
 
 	protected void HideSendCallback(){
@@ -136,18 +111,9 @@ public class TweenToggle : MonoBehaviour{
 		if(string.IsNullOrEmpty(HideFunctionName)){
 			return;
 		}
-		if(HideTarget == null){
-			HideTarget = gameObject;
+		if(HideDoneTarget == null){
+			HideDoneTarget = gameObject;
 		}
-		if(HideIncludeChildren){
-			Transform[] transforms = HideTarget.GetComponentsInChildren<Transform>();
-			for(int i = 0, imax = transforms.Length; i < imax; ++i){
-				Transform t = transforms[i];
-				t.gameObject.SendMessage(HideFunctionName, gameObject, SendMessageOptions.DontRequireReceiver);
-			}
-		}
-		else{
-			HideTarget.SendMessage(HideFunctionName, gameObject, SendMessageOptions.DontRequireReceiver);
-		}
+		HideDoneTarget.SendMessage(HideFunctionName, gameObject, SendMessageOptions.DontRequireReceiver);
 	}
 }

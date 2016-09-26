@@ -7,25 +7,32 @@ using System.Collections;
 /// Child of TweenToggle parent, Takes care of rotation toggles
 /// </summary>
 public class RotationTweenToggle : TweenToggle {
+	[Header("Tween Delta")]
+	public float hideDeltaX;
+	public float hideDeltaY;
+	public float hideDeltaZ;
+
+	protected Vector3 hiddenEulerAngle;
+	protected Vector3 showingEulerAngle;
 
 	protected override void RememberPositions(){
 		if(isGUI){
-			showingPos = GUIRectTransform.localEulerAngles;
-			hiddenPos = GUIRectTransform.localEulerAngles + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
+			showingEulerAngle = GUIRectTransform.localEulerAngles;
+			hiddenEulerAngle = GUIRectTransform.localEulerAngles + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
 		}
 		else{
-			showingPos = gameObject.transform.localEulerAngles;
-			hiddenPos = gameObject.transform.localEulerAngles + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
+			showingEulerAngle = gameObject.transform.localEulerAngles;
+			hiddenEulerAngle = gameObject.transform.localEulerAngles + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
 		}
 	}
 	
 	public override void Reset(){
 		if (startsHidden){
 			if(isGUI){
-				GUIRectTransform.localEulerAngles = hiddenPos;
+				GUIRectTransform.localEulerAngles = hiddenEulerAngle;
 			}
 			else{
-				gameObject.transform.localEulerAngles = hiddenPos;
+				gameObject.transform.localEulerAngles = hiddenEulerAngle;
 			}
 
 		 	// Need to call show first
@@ -47,21 +54,21 @@ public class RotationTweenToggle : TweenToggle {
 			LeanTween.cancel(tweenID);
 
 			if(isGUI){
-				if(showingPos.x != 0f || showingPos.z != 0f){
+				if(showingEulerAngle.x != 0f || showingEulerAngle.z != 0f){
 					Debug.LogWarning("GUI rotation will only rotate z-axis");
 				}
-				tweenID = LeanTween.rotateLocal(gameObject, new Vector3(0, 0, showingPos.z), time)	// Special case for GUI rotation
-					.setEase(easeShow)
+				tweenID = LeanTween.rotateLocal(gameObject, new Vector3(0, 0, showingEulerAngle.z), time)	// Special case for GUI rotation
+					.setEase(showEase)
 					.setDelay(showDelay)
-					.setUseEstimatedTime(isUseEstimatedTime)
+					.setUseEstimatedTime(useEstimatedTime)
 					.setOnComplete(ShowSendCallback)
 					.id;
 			}
 			else{
-				tweenID = LeanTween.rotateLocal(gameObject, showingPos, time)
-					.setEase(easeShow)
+				tweenID = LeanTween.rotateLocal(gameObject, showingEulerAngle, time)
+					.setEase(showEase)
 					.setDelay(showDelay)
-					.setUseEstimatedTime(isUseEstimatedTime)
+					.setUseEstimatedTime(useEstimatedTime)
 					.setOnComplete(ShowSendCallback)
 					.id;
 			}
@@ -76,21 +83,21 @@ public class RotationTweenToggle : TweenToggle {
 			LeanTween.cancel(tweenID);
 
 			if(isGUI){
-				if(showingPos.x != 0f || showingPos.z != 0f){
+				if(showingEulerAngle.x != 0f || showingEulerAngle.z != 0f){
 					Debug.LogWarning("GUI rotation will only rotate z-axis");
 				}
-				tweenID = LeanTween.rotateLocal(gameObject, new Vector3(0, 0, hiddenPos.z), time)
-					.setEase(easeHide)
+				tweenID = LeanTween.rotateLocal(gameObject, new Vector3(0, 0, hiddenEulerAngle.z), time)
+					.setEase(hideEase)
 					.setDelay(hideDelay)
-					.setUseEstimatedTime(isUseEstimatedTime)
+					.setUseEstimatedTime(useEstimatedTime)
 					.setOnComplete(ShowSendCallback)
 					.id;
 			}
 			else{
-				tweenID = LeanTween.rotateLocal(gameObject, hiddenPos, time)
-					.setEase(easeHide)
+				tweenID = LeanTween.rotateLocal(gameObject, hiddenEulerAngle, time)
+					.setEase(hideEase)
 					.setDelay(hideDelay)
-					.setUseEstimatedTime(isUseEstimatedTime)
+					.setUseEstimatedTime(useEstimatedTime)
 					.setOnComplete(HideSendCallback)
 					.id;
 			}
