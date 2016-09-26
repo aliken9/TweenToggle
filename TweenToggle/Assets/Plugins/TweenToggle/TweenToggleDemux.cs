@@ -8,14 +8,14 @@ using System;
 /// Packs multiple objects that needs to be move tweened into one call
 /// </summary>
 public class TweenToggleDemux : MonoBehaviour{
-
-	public GameObject[] GoList;
+	[Tooltip("All individual TweenToggle scripts to be controlled by this demux")]
+	public TweenToggle[] tweenToggleList;
 
 	public Action onStart { get; set; }
 	public Action onComplete { get; set; }
 
 
-
+	[Tooltip("Should toggle be allowed while demux is already tweening?")]
 	public bool allowReverseWhileTweening = true;	// Allow for reverse tween while tweening?
 	public bool startsHidden = false;
 	public GameObject lastFinishedShowObject;	// For lock
@@ -27,27 +27,19 @@ public class TweenToggleDemux : MonoBehaviour{
 	private bool isMoving; // Move lock
 	public bool IsMoving{ get { return isMoving; } }
 
+	[Tooltip("[OPTIONAL] Assign a canvas group to block clicks for UI behind")]
 	public CanvasGroup UIRayCastBlock;			// If this is assigned, it will attempt to block (ONLY) UI Raycasts when shown
 
 	void Awake(){
 		isMoving = false;
-		isShown = startsHidden? false : true;
+		isShown = !startsHidden;
 
-		foreach(GameObject go in GoList){
-			foreach(TweenToggle toggle in go.GetComponents<TweenToggle>()){
-				if(toggle != null){
-					if(startsHidden){
-						toggle.startsHidden = true;	// TweenToggle Start() will take care of setting position
-					}
-					else{
-						toggle.startsHidden = false;
-					}
-				}
-			}
+		foreach(TweenToggle tween in tweenToggleList){
+			tween.startsHidden = startsHidden;	// TweenToggle Start() will take care of setting position
 		}
 
 		if(UIRayCastBlock != null) {
-			UIRayCastBlock.blocksRaycasts = startsHidden ? false : true;
+			UIRayCastBlock.blocksRaycasts = !startsHidden;
 		}
 //		
 //		if(lastFinishedShowObject != null){
@@ -108,31 +100,23 @@ public class TweenToggleDemux : MonoBehaviour{
 		}
 	}
 	
-	IEnumerator SetNextFrameShow(){
+	private IEnumerator SetNextFrameShow(){
 		yield return 0;
-		foreach(GameObject go in GoList){
-			foreach(TweenToggle toggle in go.GetComponents<TweenToggle>()){
-				if(toggle != null){
-					toggle.Show();
-				}
-			}
+		foreach(TweenToggle tween in tweenToggleList){
+			tween.Show();
 		}
 	}
 	
-	IEnumerator SetNextFrameHide(){
+	private IEnumerator SetNextFrameHide(){
 		yield return 0;
-		foreach(GameObject go in GoList){
-			foreach(TweenToggle toggle in go.GetComponents<TweenToggle>()){
-				if(toggle != null){
-					if(hideImmediately){
-						//Debug.Log(" -- - - HIDE BOOLEAN TRUE");
-						// TODO Need to call last hide object last!!!!
-						toggle.hideDuration = 0f;
-						toggle.hideDelay = 0f;
-					}
-					toggle.Hide();
-				}
+		foreach(TweenToggle tween in tweenToggleList){
+			if(hideImmediately){
+				//Debug.Log(" -- - - HIDE BOOLEAN TRUE");
+				// TODO Need to call last hide object last!!!!
+				tween.hideDuration = 0f;
+				tween.hideDelay = 0f;
 			}
+			tween.Hide();
 		}
 	}
 }

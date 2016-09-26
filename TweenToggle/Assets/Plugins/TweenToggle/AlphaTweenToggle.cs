@@ -12,7 +12,7 @@ public class AlphaTweenToggle : TweenToggle {
 	protected override void RememberPositions(){
 		if(isGUI){
 			showingAlpha = GUIRectTransform.GetComponent<Image>().color.a;
-			hiddenAlpha = showingAlpha - hideDeltaAlpha;
+			hiddenAlpha = showingAlpha + hideDeltaAlpha;
 		}
 		else{
 			Debug.LogWarning("Tween alpha not implemented");
