@@ -23,7 +23,7 @@ public class TweenToggle : MonoBehaviour{
 	[Header("General Settings")]
 	[Tooltip("Doesn't do anything, check manually for organization")]
 	public bool isUsingDemultiplexer = false;
-	[Tooltip("Initial state when initialized, this is overwritten by demux if used by one")]
+	[Tooltip("Initial state on start, this is overwritten by demux if used by one")]
 	public bool startsHidden = false;
 	[Tooltip("Run independent of timescale")]
 	public bool useEstimatedTime = false;

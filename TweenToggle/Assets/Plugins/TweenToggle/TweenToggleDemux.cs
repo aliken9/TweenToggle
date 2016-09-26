@@ -8,27 +8,32 @@ using System;
 /// Packs multiple objects that needs to be move tweened into one call
 /// </summary>
 public class TweenToggleDemux : MonoBehaviour{
-	[Tooltip("All individual TweenToggle scripts to be controlled by this demux")]
-	public TweenToggle[] tweenToggleList;
 
 	public Action onStart { get; set; }
 	public Action onComplete { get; set; }
 
-
+	[Header("General Settings")]
 	[Tooltip("Should toggle be allowed while demux is already tweening?")]
-	public bool allowReverseWhileTweening = true;	// Allow for reverse tween while tweening?
+	public bool allowToggleWhileTweening = true;	// Allow for reverse tween while tweening?
+	[Tooltip("Initial state on start")]
 	public bool startsHidden = false;
-	public GameObject lastFinishedShowObject;	// For lock
-	public GameObject lastFinishedHideObject;	// For lock
 	public bool hideImmediately = false;
+	[Tooltip("[OPTIONAL] Assign a canvas group to block clicks for UI behind")]
+	public CanvasGroup UIRayCastBlock;			// If this is assigned, it will attempt to block (ONLY) UI Raycasts when shown
+
+	[Header("TweenToggle Components")]
+	[Tooltip("All individual TweenToggle scripts to be controlled by this demux")]
+	public TweenToggle[] tweenToggleList;
+
+	public GameObject lastFinishedShowObject;	// For lock //TODO figure this bit out
+	public GameObject lastFinishedHideObject;	// For lock
+
 	private bool isShown; // Active lock
 	public bool IsShowing{ get { return isShown; } }
 
 	private bool isMoving; // Move lock
 	public bool IsMoving{ get { return isMoving; } }
 
-	[Tooltip("[OPTIONAL] Assign a canvas group to block clicks for UI behind")]
-	public CanvasGroup UIRayCastBlock;			// If this is assigned, it will attempt to block (ONLY) UI Raycasts when shown
 
 	void Awake(){
 		isMoving = false;
@@ -67,7 +72,7 @@ public class TweenToggleDemux : MonoBehaviour{
 //	}
 	
 	public void Show(){
-		if(!isShown && (allowReverseWhileTweening || !isMoving)){
+		if(!isShown && (allowToggleWhileTweening || !isMoving)){
 			isShown = true;
 			isMoving = true;
 
@@ -84,7 +89,7 @@ public class TweenToggleDemux : MonoBehaviour{
 	}
 	
 	public void Hide(){
-		if(isShown && (allowReverseWhileTweening || !isMoving)){
+		if(isShown && (allowToggleWhileTweening || !isMoving)){
 			isShown = false;
 			isMoving = true;
 
