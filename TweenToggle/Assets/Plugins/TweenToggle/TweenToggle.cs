@@ -1,5 +1,6 @@
 ﻿//// Copyright (c) Thalassian Studios
 using UnityEngine;
+using UnityEngine.Events;
 using System.Collections;
 
 /// <summary>
@@ -40,16 +41,17 @@ public class TweenToggle : MonoBehaviour{
 	//////////////////////////////////////////////////////
 	
 	[Header("Tween Complete Callback")]
-	public GameObject ShowDoneTarget;
-	public string ShowFunctionName;
-	[Space(10)]
-	public GameObject HideDoneTarget;
-	public string HideFunctionName;
+	public UnityEvent onShowComplete;
+	public UnityEvent onHideComplete;
 
 	protected bool isGUI;						// Check if Unity GUI, will be set on awake
 	protected RectTransform GUIRectTransform;	// Local cache of rect transform if GUI
 
 	protected int tweenID = -1;
+
+	private bool isLastShowDemuxObject = false;		// If last object on a demux
+	private bool isLastHideDemuxObject = false;		// If last object on a demux
+	private TweenToggleDemux demuxScript;		// Aux reference to demux for finish callback
 
 	protected void Awake(){
 		GUIRectTransform = gameObject.GetComponent<RectTransform>();
@@ -59,6 +61,17 @@ public class TweenToggle : MonoBehaviour{
 	
 	protected void Start(){
 		Reset();
+	}
+
+	// Set as last demux object
+	public void SetLastDemuxObject(bool isShow, TweenToggleDemux parentDemux){
+		if(isShow){
+			isLastShowDemuxObject = true;
+		}
+		else{
+			isLastHideDemuxObject = true;
+		}
+		demuxScript = parentDemux;
 	}
 	
 	protected virtual void RememberPositions(){
@@ -99,24 +112,20 @@ public class TweenToggle : MonoBehaviour{
 	protected void ShowSendCallback(){
 		tweenID = -1;
 		isMoving = false;
-		if(string.IsNullOrEmpty(ShowFunctionName)){
-			return;
+
+		if(isLastShowDemuxObject && demuxScript){
+			demuxScript.ShowSendCallback();
 		}
-		if(ShowDoneTarget == null){
-			ShowDoneTarget = gameObject;
-		}
-		ShowDoneTarget.SendMessage(ShowFunctionName, gameObject, SendMessageOptions.DontRequireReceiver);
+		onShowComplete.Invoke();
 	}
 
 	protected void HideSendCallback(){
 		tweenID = -1;
 		isMoving = false;
-		if(string.IsNullOrEmpty(HideFunctionName)){
-			return;
+
+		if(isLastHideDemuxObject && demuxScript){
+			demuxScript.HideSendCallback();
 		}
-		if(HideDoneTarget == null){
-			HideDoneTarget = gameObject;
-		}
-		HideDoneTarget.SendMessage(HideFunctionName, gameObject, SendMessageOptions.DontRequireReceiver);
+		onShowComplete.Invoke();
 	}
 }

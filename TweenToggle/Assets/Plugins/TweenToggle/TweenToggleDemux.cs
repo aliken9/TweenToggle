@@ -1,17 +1,14 @@
 ﻿//// Copyright (c) Thalassian Studios
 using UnityEngine;
-using System.Collections;
+using UnityEngine.Events;
 using System;
+using System.Collections;
 
 /// <summary>
 /// Move tween toggle demultiplexer.
 /// Packs multiple objects that needs to be move tweened into one call
 /// </summary>
 public class TweenToggleDemux : MonoBehaviour{
-
-	public Action onStart { get; set; }
-	public Action onComplete { get; set; }
-
 	[Header("General Settings")]
 	[Tooltip("Should toggle be allowed while demux is already tweening?")]
 	public bool allowToggleWhileTweening = true;	// Allow for reverse tween while tweening?
@@ -19,14 +16,15 @@ public class TweenToggleDemux : MonoBehaviour{
 	public bool startsHidden = false;
 	public bool hideImmediately = false;
 	[Tooltip("[OPTIONAL] Assign a canvas group to block clicks for UI behind")]
-	public CanvasGroup UIRayCastBlock;			// If this is assigned, it will attempt to block (ONLY) UI Raycasts when shown
+	public CanvasGroup UIRayCastBlock;				// If this is assigned, it will attempt to block (ONLY) UI Raycasts when shown
+
+	[Header("Tween Complete Callback")]
+	public UnityEvent onShowComplete;
+	public UnityEvent onHideComplete;
 
 	[Header("TweenToggle Components")]
 	[Tooltip("All individual TweenToggle scripts to be controlled by this demux")]
 	public TweenToggle[] tweenToggleList;
-
-	public GameObject lastFinishedShowObject;	// For lock //TODO figure this bit out
-	public GameObject lastFinishedHideObject;	// For lock
 
 	private bool isShown; // Active lock
 	public bool IsShowing{ get { return isShown; } }
@@ -34,42 +32,44 @@ public class TweenToggleDemux : MonoBehaviour{
 	private bool isMoving; // Move lock
 	public bool IsMoving{ get { return isMoving; } }
 
-
 	void Awake(){
 		isMoving = false;
 		isShown = !startsHidden;
 
+		// Track the last toggle to finish
+		TweenToggle lastShowToggleSoFar = null;
+		TweenToggle lastHideToggleSoFar = null;
+
 		foreach(TweenToggle tween in tweenToggleList){
-			tween.startsHidden = startsHidden;	// TweenToggle Start() will take care of setting position
+			tween.startsHidden = startsHidden;			// TweenToggle Start() will take care of setting position
+
+			// Find the TweenToggles that are the last to finish for show and hide
+			if(lastShowToggleSoFar == null){
+				lastShowToggleSoFar = tween;
+			}
+			else{
+				if(tween.showDelay + tween.showDuration > lastShowToggleSoFar.showDelay + lastShowToggleSoFar.showDuration){
+					lastShowToggleSoFar = tween;
+				}
+			}
+			if(lastHideToggleSoFar == null){
+				lastHideToggleSoFar = tween;
+			}
+			else{
+				if(tween.hideDelay + tween.hideDuration > lastShowToggleSoFar.hideDelay + lastShowToggleSoFar.hideDuration){
+					lastHideToggleSoFar = tween;
+				}
+			}
 		}
+
+		// Init the last TweenToggles to call this demux on show/hide complete
+		lastShowToggleSoFar.SetLastDemuxObject(true, this);
+		lastHideToggleSoFar.SetLastDemuxObject(false, this);
 
 		if(UIRayCastBlock != null) {
 			UIRayCastBlock.blocksRaycasts = !startsHidden;
 		}
-//		
-//		if(lastFinishedShowObject != null){
-//			lastFinishedShowObjectScript = lastFinishedShowObject.GetComponent<TweenToggle>();
-//		}
-//		
-//		if(lastFinishedHideObject != null){
-//			lastFinishedHideObjectScript = lastFinishedHideObject.GetComponent<TweenToggle>();
-//		}
-
-		//TODO Need to determine last script show the complete isShown call, and do callbacks
 	}
-	
-//	public void LgReset(){
-//		if(UIRayCastBlock != null) {
-//			UIRayCastBlock.blocksRaycasts = startsHidden ? false : true;
-//		}
-//		foreach(GameObject go in GoList){
-//			TweenToggle[] toggleList = go.GetComponents<TweenToggle>();
-//			foreach(TweenToggle toggle in toggleList){
-//				toggle.startsHidden = startsHidden;
-//				toggle.Reset();
-//			}
-//		}
-//	}
 	
 	public void Show(){
 		if(!isShown && (allowToggleWhileTweening || !isMoving)){
@@ -83,7 +83,6 @@ public class TweenToggleDemux : MonoBehaviour{
 			StartCoroutine(SetNextFrameShow());
 		}
 		else{
-			//Debug.Log(isShown + " + " + isMoving);
 			//Debug.Log("Demux in locked state already");
 		}
 	}
@@ -100,7 +99,6 @@ public class TweenToggleDemux : MonoBehaviour{
 			StartCoroutine(SetNextFrameHide());
 		}
 		else{
-			//Debug.Log(isShown + " + " + isMoving);
 			//Debug.Log("Demux in locked state already");
 		}
 	}
@@ -123,5 +121,15 @@ public class TweenToggleDemux : MonoBehaviour{
 			}
 			tween.Hide();
 		}
+	}
+
+	public void ShowSendCallback(){
+		isMoving = false;
+		onShowComplete.Invoke();
+	}
+
+	public void HideSendCallback(){
+		isMoving = false;
+		onHideComplete.Invoke();
 	}
 }
