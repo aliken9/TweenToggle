@@ -19,7 +19,6 @@ public class RotationTweenToggle : TweenToggle {
 		if(isGUI){
 			showingEulerAngle = GUIRectTransform.localEulerAngles;
 			hiddenEulerAngle = GUIRectTransform.localEulerAngles + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
-			Debug.Log(hiddenEulerAngle);
 		}
 		else{
 			showingEulerAngle = gameObject.transform.localEulerAngles;
@@ -58,7 +57,7 @@ public class RotationTweenToggle : TweenToggle {
 				if(showingEulerAngle.x != 0f || showingEulerAngle.z != 0f){
 					Debug.LogWarning("GUI rotation will only rotate z-axis");
 				}
-				tweenID = LeanTween.rotateLocal(gameObject, new Vector3(0, 0, showingEulerAngle.z), time)	// Special case for GUI rotation
+				tweenID = LeanTween.value(gameObject, SetRotation, hiddenEulerAngle, showingEulerAngle, time)
 					.setEase(showEase)
 					.setDelay(showDelay)
 					.setUseEstimatedTime(useEstimatedTime)
@@ -66,7 +65,7 @@ public class RotationTweenToggle : TweenToggle {
 					.id;
 			}
 			else{
-				tweenID = LeanTween.rotateLocal(gameObject, showingEulerAngle, time)
+				tweenID = LeanTween.value(gameObject, SetRotation, hiddenEulerAngle, showingEulerAngle, time)
 					.setEase(showEase)
 					.setDelay(showDelay)
 					.setUseEstimatedTime(useEstimatedTime)
@@ -87,7 +86,7 @@ public class RotationTweenToggle : TweenToggle {
 				if(showingEulerAngle.x != 0f || showingEulerAngle.z != 0f){
 					Debug.LogWarning("GUI rotation will only rotate z-axis");
 				}
-				tweenID = LeanTween.rotateLocal(gameObject, hiddenEulerAngle, time)
+				tweenID = LeanTween.value(gameObject, SetRotation, showingEulerAngle, hiddenEulerAngle, time)
 					.setEase(hideEase)
 					.setDelay(hideDelay)
 					.setUseEstimatedTime(useEstimatedTime)
@@ -95,7 +94,7 @@ public class RotationTweenToggle : TweenToggle {
 					.id;
 			}
 			else{
-				tweenID = LeanTween.rotateLocal(gameObject, hiddenEulerAngle, time)
+				tweenID = LeanTween.value(gameObject, SetRotation, showingEulerAngle, hiddenEulerAngle, time)
 					.setEase(hideEase)
 					.setDelay(hideDelay)
 					.setUseEstimatedTime(useEstimatedTime)
@@ -103,5 +102,9 @@ public class RotationTweenToggle : TweenToggle {
 					.id;
 			}
 		}
+	}
+
+	private void SetRotation(Vector3 value){
+		gameObject.transform.localEulerAngles = value;
 	}
 }

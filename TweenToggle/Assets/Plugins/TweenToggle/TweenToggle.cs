@@ -1,14 +1,13 @@
-﻿//// Copyright (c) Thalassian Studios
+﻿/// Copyright (c) Pixelmetry
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
 
 /// <summary>
-/// Tween toggle.
 /// Used to toogle move objects with LeanTween
 /// Parent class not to be used, implemented by PositionTweenToggle, ScaleTweenToggle, and RotationTweenToggle
 /// </summary>
-public class TweenToggle : MonoBehaviour{
+public abstract class TweenToggle : MonoBehaviour{
 
 	protected bool isMoving;
 	public bool IsMoving{
