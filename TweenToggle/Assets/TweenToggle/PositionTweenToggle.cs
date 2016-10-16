@@ -1,38 +1,39 @@
-﻿//// Copyright (c) Thalassian Studios
+﻿// TweenToggle version 0.1 - https://pixelmetry.com/projects/unity-tweentoggle-plugin/
+// Copyright (C) 2016 Wenshiang Sean Chung - Pixelmetry
 using UnityEngine;
 using System.Collections;
 
 /// <summary>
-/// Scale tween toggle.
-/// Child of TweenToggle parent, Takes care of scale toggles
+/// Position tween toggle.
+/// Child of TweenToggle parent, Takes care of translation toggles
 /// </summary>
-public class ScaleTweenToggle : TweenToggle {
+public class PositionTweenToggle : TweenToggle {
 	[Header("Tween Delta")]
 	public float hideDeltaX;
 	public float hideDeltaY;
 	public float hideDeltaZ;
 
-	protected Vector3 hiddenScale;
-	protected Vector3 showingScale;
-	
+	protected Vector3 hiddenPosition;
+	protected Vector3 showingPosition;
+
 	protected override void RememberPositions(){
 		if(isGUI){
-			showingScale = GUIRectTransform.localScale;
-			hiddenScale = GUIRectTransform.localScale + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
+			showingPosition = GUIRectTransform.anchoredPosition3D;
+			hiddenPosition = GUIRectTransform.anchoredPosition3D + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
 		}
 		else{
-			showingScale = gameObject.transform.localScale;
-			hiddenScale = gameObject.transform.localScale + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
+			showingPosition = gameObject.transform.localPosition;
+			hiddenPosition = gameObject.transform.localPosition + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
 		}
 	}
 	
 	public override void Reset(){
-		if (startsHidden){
+		if(startsHidden){
 			if(isGUI){
-				GUIRectTransform.localScale = hiddenScale;
+				GUIRectTransform.anchoredPosition3D = hiddenPosition;
 			}
 			else{
-				gameObject.transform.localScale = hiddenScale;
+				gameObject.transform.localPosition = hiddenPosition;
 			}
 			
 		 	// Need to call show first
@@ -50,19 +51,20 @@ public class ScaleTweenToggle : TweenToggle {
 		if(!isShown){
 			isShown = true;
 			isMoving = true;
-
+			
 			LeanTween.cancel(tweenID);
 
 			if(isGUI){
-				tweenID = LeanTween.scale(GUIRectTransform, showingScale, time)
+				tweenID = LeanTween.move(GUIRectTransform, showingPosition, time)
 					.setEase(showEase)
 					.setDelay(showDelay)
 					.setUseEstimatedTime(useEstimatedTime)
 					.setOnComplete(ShowSendCallback)
 					.id;
+
 			}
 			else{
-				tweenID = LeanTween.scale(gameObject, showingScale, time)
+				tweenID = LeanTween.moveLocal(gameObject, showingPosition, time)
 					.setEase(showEase)
 					.setDelay(showDelay)
 					.setUseEstimatedTime(useEstimatedTime)
@@ -76,11 +78,11 @@ public class ScaleTweenToggle : TweenToggle {
 		if(isShown){
 			isShown = false;
 			isMoving = true;
-			
+
 			LeanTween.cancel(tweenID);
 
 			if(isGUI){
-				tweenID = LeanTween.scale(GUIRectTransform, hiddenScale, time)
+				tweenID = LeanTween.move(GUIRectTransform, hiddenPosition, time)
 					.setEase(hideEase)
 					.setDelay(hideDelay)
 					.setUseEstimatedTime(useEstimatedTime)
@@ -88,7 +90,7 @@ public class ScaleTweenToggle : TweenToggle {
 					.id;
 			}
 			else{
-				tweenID = LeanTween.scale(gameObject, hiddenScale, time)
+				tweenID = LeanTween.moveLocal(gameObject, hiddenPosition, time)
 					.setEase(hideEase)
 					.setDelay(hideDelay)
 					.setUseEstimatedTime(useEstimatedTime)
