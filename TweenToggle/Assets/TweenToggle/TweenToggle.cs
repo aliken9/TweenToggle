@@ -1,4 +1,5 @@
-﻿/// Copyright (c) Pixelmetry
+﻿// TweenToggle version 0.1 - https://pixelmetry.com/projects/unity-tweentoggle-plugin/
+// Copyright (C) 2016 Wenshiang Sean Chung - Pixelmetry
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
@@ -22,7 +23,14 @@ public abstract class TweenToggle : MonoBehaviour{
 	//////////////////////////////////////////////////////
 	[Header("General Settings")]
 	[Tooltip("Doesn't do anything, check manually for organization")]
-	public bool isUsingDemultiplexer = false;
+	[SerializeField]
+	#pragma warning disable 0414
+	private bool isUsingDemux = false;
+	#pragma warning restore 0414
+	public bool IsUsingDemux {
+		set { isUsingDemux = value; }
+	}
+
 	[Tooltip("Initial state on start, this is overwritten by demux if used by one")]
 	public bool startsHidden = false;
 	[Tooltip("Run independent of timescale")]

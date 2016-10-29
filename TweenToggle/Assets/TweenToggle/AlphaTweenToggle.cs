@@ -1,4 +1,5 @@
-﻿//// Copyright (c) Thalassian Studios
+﻿// TweenToggle version 0.1 - https://pixelmetry.com/projects/unity-tweentoggle-plugin/
+// Copyright (C) 2016 Wenshiang Sean Chung - Pixelmetry
 using UnityEngine;
 using UnityEngine.UI;
 
