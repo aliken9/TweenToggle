@@ -1,15 +1,13 @@
-﻿// TweenToggle version 0.1 - https://pixelmetry.com/projects/unity-tweentoggle-plugin/
-// Copyright (C) 2016 Wenshiang Sean Chung - Pixelmetry
+﻿// TweenToggle version 1.0 - http://www.pixelmetry.com/?portfolio=tween-toggle
+// Copyright (C) 2017 Wenshiang Sean Chung - Pixelmetry
 using UnityEngine;
 using UnityEngine.Events;
-using System.Collections;
 
 /// <summary>
 /// Used to toogle move objects with LeanTween
 /// Parent class not to be used, implemented by PositionTweenToggle, ScaleTweenToggle, and RotationTweenToggle
 /// </summary>
 public abstract class TweenToggle : MonoBehaviour{
-
 	protected bool isMoving;
 	public bool IsMoving{
 		get{ return isMoving; }
@@ -35,6 +33,8 @@ public abstract class TweenToggle : MonoBehaviour{
 	public bool startsHidden = false;
 	[Tooltip("Run independent of timescale")]
 	public bool useEstimatedTime = false;
+	[Tooltip("Inactivate object when hide")]
+	public bool inactiveWhenHidden = true;
 
 	[Header("Timing and Easing")]
 	public float showDelay = 0.0f;
@@ -89,7 +89,16 @@ public abstract class TweenToggle : MonoBehaviour{
 		// Implement in child
 	}
 
+	protected void ResetFinish() {
+		if(inactiveWhenHidden) {
+			gameObject.SetActive(!startsHidden);
+		}
+	}
+
 	public void Show(){
+		if(inactiveWhenHidden) {
+			gameObject.SetActive(true);
+		}
 		Show(showDuration);
 	}
 	
@@ -133,6 +142,11 @@ public abstract class TweenToggle : MonoBehaviour{
 		if(isLastHideDemuxObject && demuxScript){
 			demuxScript.HideSendCallback();
 		}
-		onShowComplete.Invoke();
+		onHideComplete.Invoke();
+
+		// Toggle object off
+		if(inactiveWhenHidden) {
+			gameObject.SetActive(!startsHidden);
+		}
 	}
 }

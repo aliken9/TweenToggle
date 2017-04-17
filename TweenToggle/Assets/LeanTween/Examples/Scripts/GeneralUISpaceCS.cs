@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using DentedPixel;
 
 public class GeneralUISpaceCS : MonoBehaviour {
 
@@ -19,6 +20,8 @@ public class GeneralUISpaceCS : MonoBehaviour {
 	public RectTransform chatBar1;
 	public RectTransform chatBar2;
 	public UnityEngine.UI.Text chatText;
+
+	public RectTransform rawImageRect;
 
 	void Start () {
 		// Time.timeScale = 1f/4f;
@@ -41,6 +44,9 @@ public class GeneralUISpaceCS : MonoBehaviour {
 		// Fade button in
 		LeanTween.textAlpha(mainButton2, 1f, 2f ).setFrom(0f).setDelay(0f).setEase(LeanTweenType.easeOutQuad);
 		LeanTween.alpha(mainButton2, 1f, 2f ).setFrom(0f).setDelay(0f).setEase(LeanTweenType.easeOutQuad);
+
+		// Pop size of button
+		LeanTween.size(mainButton1, mainButton1.sizeDelta * 1.1f, 0.5f).setDelay(3f).setEaseInOutCirc().setRepeat(6).setLoopPingPong();
 
 
 		// *********** Pause Button **********
@@ -75,7 +81,9 @@ public class GeneralUISpaceCS : MonoBehaviour {
 		LeanTween.value(gameObject, 0, (float)origText.Length, 6f).setEase(LeanTweenType.easeOutQuad).setOnUpdate( (float val)=>{
 			chatText.text = origText.Substring( 0, Mathf.RoundToInt( val ) );
 		}).setLoopClamp().setDelay(2.0f);
-		
+
+		// Raw Image
+		LeanTween.alpha(rawImageRect,0f,1f).setLoopPingPong();
 	}
 
 }

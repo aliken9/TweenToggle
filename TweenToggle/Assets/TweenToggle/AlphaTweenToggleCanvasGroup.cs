@@ -1,7 +1,6 @@
-﻿// TweenToggle version 0.1 - https://pixelmetry.com/projects/unity-tweentoggle-plugin/
-// Copyright (C) 2016 Wenshiang Sean Chung - Pixelmetry
+﻿// TweenToggle version 1.0 - http://www.pixelmetry.com/?portfolio=tween-toggle
+// Copyright (C) 2017 Wenshiang Sean Chung - Pixelmetry
 using UnityEngine;
-using System.Collections;
 
 [RequireComponent(typeof(CanvasGroup))]
 public class AlphaTweenToggleCanvasGroup : TweenToggle {
@@ -40,6 +39,7 @@ public class AlphaTweenToggleCanvasGroup : TweenToggle {
 			isShown = true;
 			isMoving = false;
 		}
+		ResetFinish();
 	}
 
 	public override void Show(float time) {

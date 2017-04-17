@@ -1,8 +1,7 @@
-﻿// TweenToggle version 0.1 - https://pixelmetry.com/projects/unity-tweentoggle-plugin/
-// Copyright (C) 2016 Wenshiang Sean Chung - Pixelmetry
+﻿// TweenToggle version 1.0 - http://www.pixelmetry.com/?portfolio=tween-toggle
+// Copyright (C) 2017 Wenshiang Sean Chung - Pixelmetry
 using UnityEngine;
 using UnityEngine.Events;
-using System;
 using System.Collections;
 
 /// <summary>
@@ -86,6 +85,11 @@ public class TweenToggleDemux : MonoBehaviour{
 
 			if(UIRayCastBlock != null) {
 				UIRayCastBlock.blocksRaycasts = true;
+			}
+
+			// Might be disabled from tween toggle, set self active
+			if(!gameObject.activeSelf) {
+				gameObject.SetActive(true);
 			}
 
 			StartCoroutine(SetNextFrameShow());
