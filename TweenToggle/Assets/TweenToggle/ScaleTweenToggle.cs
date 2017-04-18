@@ -14,47 +14,47 @@ public class ScaleTweenToggle : TweenToggle {
 
 	protected Vector3 hiddenScale;
 	protected Vector3 showingScale;
-	
-	protected override void RememberPositions(){
-		if(isGUI){
+
+	protected override void RememberPositions() {
+		if(isGUI) {
 			showingScale = GUIRectTransform.localScale;
 			hiddenScale = GUIRectTransform.localScale + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
 		}
-		else{
+		else {
 			showingScale = gameObject.transform.localScale;
 			hiddenScale = gameObject.transform.localScale + new Vector3(hideDeltaX, hideDeltaY, hideDeltaZ);
 		}
 	}
-	
-	public override void Reset(){
-		if (startsHidden){
-			if(isGUI){
+
+	public override void Reset() {
+		if(startsHidden) {
+			if(isGUI) {
 				GUIRectTransform.localScale = hiddenScale;
 			}
-			else{
+			else {
 				gameObject.transform.localScale = hiddenScale;
 			}
-			
-		 	// Need to call show first
+
+			// Need to call show first
 			isShown = false;
 			isMoving = false;
 		}
-		else{
+		else {
 			// Need to call hide first
 			isShown = true;
 			isMoving = false;
 		}
 		ResetFinish();
 	}
-	
-	public override void Show(float time){
-		if(!isShown){
+
+	public override void Show(float time) {
+		if(!isShown) {
 			isShown = true;
 			isMoving = true;
 
 			LeanTween.cancel(tweenID);
 
-			if(isGUI){
+			if(isGUI) {
 				tweenID = LeanTween.scale(GUIRectTransform, showingScale, time)
 					.setEase(showEase)
 					.setDelay(showDelay)
@@ -62,7 +62,7 @@ public class ScaleTweenToggle : TweenToggle {
 					.setOnComplete(ShowSendCallback)
 					.id;
 			}
-			else{
+			else {
 				tweenID = LeanTween.scale(gameObject, showingScale, time)
 					.setEase(showEase)
 					.setDelay(showDelay)
@@ -73,14 +73,14 @@ public class ScaleTweenToggle : TweenToggle {
 		}
 	}
 
-	public override void Hide(float time){
-		if(isShown){
+	public override void Hide(float time) {
+		if(isShown) {
 			isShown = false;
 			isMoving = true;
-			
+
 			LeanTween.cancel(tweenID);
 
-			if(isGUI){
+			if(isGUI) {
 				tweenID = LeanTween.scale(GUIRectTransform, hiddenScale, time)
 					.setEase(hideEase)
 					.setDelay(hideDelay)
@@ -88,7 +88,7 @@ public class ScaleTweenToggle : TweenToggle {
 					.setOnComplete(HideSendCallback)
 					.id;
 			}
-			else{
+			else {
 				tweenID = LeanTween.scale(gameObject, hiddenScale, time)
 					.setEase(hideEase)
 					.setDelay(hideDelay)

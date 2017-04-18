@@ -2,6 +2,7 @@
 // Copyright (C) 2017 Wenshiang Sean Chung - Pixelmetry
 using UnityEngine;
 using UnityEngine.Events;
+using System.Collections;
 
 /// <summary>
 /// Used to toogle move objects with LeanTween
@@ -64,9 +65,6 @@ public abstract class TweenToggle : MonoBehaviour{
 		GUIRectTransform = gameObject.GetComponent<RectTransform>();
 		isGUI = GUIRectTransform != null ? true : false;
 		RememberPositions();
-	}
-	
-	protected void Start(){
 		Reset();
 	}
 
@@ -80,16 +78,21 @@ public abstract class TweenToggle : MonoBehaviour{
 		}
 		demuxScript = parentDemux;
 	}
-	
-	protected virtual void RememberPositions(){
-		// Implement in child
-	}
 
-	public virtual void Reset(){
-		// Implement in child
-	}
+	// Implement in child
+	protected abstract void RememberPositions();
+
+	// Implement in child
+	public abstract void Reset();
 
 	protected void ResetFinish() {
+		StartCoroutine(ResetFinishHelper());
+	}
+
+	// Since setting an object inactive too soon affects setup of other TweenToggle components
+	// in the same object, we wait until the end of frame to deactivate it
+	private IEnumerator ResetFinishHelper() {
+		yield return new WaitForEndOfFrame();
 		if(inactiveWhenHidden) {
 			gameObject.SetActive(!startsHidden);
 		}
@@ -101,10 +104,9 @@ public abstract class TweenToggle : MonoBehaviour{
 		}
 		Show(showDuration);
 	}
-	
-	public virtual void Show(float time){
-		// Implement in child
-	}
+
+	// Implement in child
+	public abstract void Show(float time);
 	
 	// Since Hide() only saves its show/hide position in the beginning,
 	// 	if something has a dynamically changing position (inventory),
@@ -120,9 +122,8 @@ public abstract class TweenToggle : MonoBehaviour{
 		Hide(hideDuration);
 	}
 
-	public virtual void Hide(float time){
-		// Implement in child
-	}
+	// Implement in child
+	public abstract void Hide(float time);
 
 	///////////////////////// CALLBACKS ///////////////////////////////
 	protected void ShowSendCallback(){
@@ -146,7 +147,7 @@ public abstract class TweenToggle : MonoBehaviour{
 
 		// Toggle object off
 		if(inactiveWhenHidden) {
-			gameObject.SetActive(!startsHidden);
+			gameObject.SetActive(false);
 		}
 	}
 }

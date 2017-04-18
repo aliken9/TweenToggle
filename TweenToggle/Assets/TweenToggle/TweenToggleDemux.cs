@@ -8,15 +8,15 @@ using System.Collections;
 /// Move tween toggle demultiplexer.
 /// Packs multiple objects that needs to be move tweened into one call
 /// </summary>
-public class TweenToggleDemux : MonoBehaviour{
+public class TweenToggleDemux : MonoBehaviour {
 	[Header("General Settings")]
 	[Tooltip("Should toggle be allowed while demux is already tweening?")]
-	public bool allowToggleWhileTweening = true;	// Allow for reverse tween while tweening?
+	public bool allowToggleWhileTweening = true;    // Allow for reverse tween while tweening?
 	[Tooltip("Initial state on start")]
 	public bool startsHidden = false;
 	public bool hideImmediately = false;
 	[Tooltip("[OPTIONAL] Assign a canvas group to block clicks for UI behind")]
-	public CanvasGroup UIRayCastBlock;				// If this is assigned, it will attempt to block (ONLY) UI Raycasts when shown
+	public CanvasGroup UIRayCastBlock;              // If this is assigned, it will attempt to block (ONLY) UI Raycasts when shown
 
 	[Header("Tween Complete Callback")]
 	public UnityEvent onShowComplete;
@@ -27,19 +27,19 @@ public class TweenToggleDemux : MonoBehaviour{
 	public TweenToggle[] tweenToggleList;
 
 	private bool isShown; // Active lock
-	public bool IsShowing{ get { return isShown; } }
+	public bool IsShowing { get { return isShown; } }
 
 	private bool isMoving; // Move lock
-	public bool IsMoving{ get { return isMoving; } }
+	public bool IsMoving { get { return isMoving; } }
 
-	void OnValidate(){
+	void OnValidate() {
 		// Update IsUsingDemux for items inside the list
-		foreach(TweenToggle tween in tweenToggleList){
+		foreach(TweenToggle tween in tweenToggleList) {
 			tween.IsUsingDemux = true;
 		}
 	}
 
-	void Awake(){
+	void Awake() {
 		isMoving = false;
 		isShown = !startsHidden;
 
@@ -47,23 +47,23 @@ public class TweenToggleDemux : MonoBehaviour{
 		TweenToggle lastShowToggleSoFar = null;
 		TweenToggle lastHideToggleSoFar = null;
 
-		foreach(TweenToggle tween in tweenToggleList){
-			tween.startsHidden = startsHidden;			// TweenToggle Start() will take care of setting position
+		foreach(TweenToggle tween in tweenToggleList) {
+			tween.startsHidden = startsHidden;          // TweenToggle Start() will take care of setting position
 
 			// Find the TweenToggles that are the last to finish for show and hide
-			if(lastShowToggleSoFar == null){
+			if(lastShowToggleSoFar == null) {
 				lastShowToggleSoFar = tween;
 			}
-			else{
-				if(tween.showDelay + tween.showDuration > lastShowToggleSoFar.showDelay + lastShowToggleSoFar.showDuration){
+			else {
+				if(tween.showDelay + tween.showDuration > lastShowToggleSoFar.showDelay + lastShowToggleSoFar.showDuration) {
 					lastShowToggleSoFar = tween;
 				}
 			}
-			if(lastHideToggleSoFar == null){
+			if(lastHideToggleSoFar == null) {
 				lastHideToggleSoFar = tween;
 			}
-			else{
-				if(tween.hideDelay + tween.hideDuration > lastShowToggleSoFar.hideDelay + lastShowToggleSoFar.hideDuration){
+			else {
+				if(tween.hideDelay + tween.hideDuration > lastShowToggleSoFar.hideDelay + lastShowToggleSoFar.hideDuration) {
 					lastHideToggleSoFar = tween;
 				}
 			}
@@ -77,9 +77,9 @@ public class TweenToggleDemux : MonoBehaviour{
 			UIRayCastBlock.blocksRaycasts = !startsHidden;
 		}
 	}
-	
-	public void Show(){
-		if(!isShown && (allowToggleWhileTweening || !isMoving)){
+
+	public void Show() {
+		if(!isShown && (allowToggleWhileTweening || !isMoving)) {
 			isShown = true;
 			isMoving = true;
 
@@ -94,13 +94,13 @@ public class TweenToggleDemux : MonoBehaviour{
 
 			StartCoroutine(SetNextFrameShow());
 		}
-		else{
+		else {
 			//Debug.Log("Demux in locked state already");
 		}
 	}
-	
-	public void Hide(){
-		if(isShown && (allowToggleWhileTweening || !isMoving)){
+
+	public void Hide() {
+		if(isShown && (allowToggleWhileTweening || !isMoving)) {
 			isShown = false;
 			isMoving = true;
 
@@ -110,22 +110,22 @@ public class TweenToggleDemux : MonoBehaviour{
 
 			StartCoroutine(SetNextFrameHide());
 		}
-		else{
+		else {
 			//Debug.Log("Demux in locked state already");
 		}
 	}
-	
-	private IEnumerator SetNextFrameShow(){
+
+	private IEnumerator SetNextFrameShow() {
 		yield return 0;
-		foreach(TweenToggle tween in tweenToggleList){
+		foreach(TweenToggle tween in tweenToggleList) {
 			tween.Show();
 		}
 	}
-	
-	private IEnumerator SetNextFrameHide(){
+
+	private IEnumerator SetNextFrameHide() {
 		yield return 0;
-		foreach(TweenToggle tween in tweenToggleList){
-			if(hideImmediately){
+		foreach(TweenToggle tween in tweenToggleList) {
+			if(hideImmediately) {
 				//Debug.Log(" -- - - HIDE BOOLEAN TRUE");
 				// TODO Need to call last hide object last!!!!
 				tween.hideDuration = 0f;
@@ -135,12 +135,12 @@ public class TweenToggleDemux : MonoBehaviour{
 		}
 	}
 
-	public void ShowSendCallback(){
+	public void ShowSendCallback() {
 		isMoving = false;
 		onShowComplete.Invoke();
 	}
 
-	public void HideSendCallback(){
+	public void HideSendCallback() {
 		isMoving = false;
 		onHideComplete.Invoke();
 	}
