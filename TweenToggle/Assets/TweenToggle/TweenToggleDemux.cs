@@ -63,7 +63,7 @@ public class TweenToggleDemux : MonoBehaviour {
 				lastHideToggleSoFar = tween;
 			}
 			else {
-				if(tween.hideDelay + tween.hideDuration > lastShowToggleSoFar.hideDelay + lastShowToggleSoFar.hideDuration) {
+				if(tween.hideDelay + tween.hideDuration > lastHideToggleSoFar.hideDelay + lastHideToggleSoFar.hideDuration) {
 					lastHideToggleSoFar = tween;
 				}
 			}

@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class TweenToggleDemuxExamples : MonoBehaviour {
 	public TweenToggleDemux demux1;
 	public TweenToggleDemux demux2;
 	public TweenToggleDemux demux3;
-	public GameObject demux3CallbackText;
 	public TweenToggleDemux demux4;
 
 	public void OnDemux1Button(bool isOn){
@@ -33,14 +31,6 @@ public class TweenToggleDemuxExamples : MonoBehaviour {
 		else{
 			demux3.Hide();
 		}
-	}
-
-	public void OnDemux3ShowComplete(){
-		demux3CallbackText.SetActive(true);
-	}
-
-	public void OnDemux3HideComplete(){
-		demux3CallbackText.SetActive(false);
 	}
 
 	public void OnDemux4Button(bool isOn){
