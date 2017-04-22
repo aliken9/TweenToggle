@@ -21,21 +21,14 @@ public abstract class TweenToggle : MonoBehaviour{
 
 	//////////////////////////////////////////////////////
 	[Header("General Settings")]
-	[Tooltip("Doesn't do anything, check manually for organization")]
-	[SerializeField]
-	#pragma warning disable 0414
-	private bool isUsingDemux = false;
-	#pragma warning restore 0414
-	public bool IsUsingDemux {
-		set { isUsingDemux = value; }
-	}
-
 	[Tooltip("Initial state on start, this is overwritten by demux if used by one")]
 	public bool startsHidden = false;
 	[Tooltip("Run independent of timescale")]
 	public bool useEstimatedTime = false;
 	[Tooltip("Inactivate object when hide")]
 	public bool inactiveWhenHidden = true;
+	[Tooltip("On hide call, hide object immediately instead of tweening")]
+	public bool hideImmediately = false;
 
 	[Header("Timing and Easing")]
 	public float showDelay = 0.0f;
@@ -52,14 +45,18 @@ public abstract class TweenToggle : MonoBehaviour{
 	public UnityEvent onShowComplete;
 	public UnityEvent onHideComplete;
 
-	protected bool isGUI;						// Check if Unity GUI, will be set on awake
-	protected RectTransform GUIRectTransform;	// Local cache of rect transform if GUI
+	protected bool isGUI;							// Check if Unity GUI, will be set on awake
+	protected RectTransform GUIRectTransform;		// Local cache of rect transform if GUI
 
 	protected int tweenID = -1;
 
 	private bool isLastShowDemuxObject = false;		// If last object on a demux
 	private bool isLastHideDemuxObject = false;		// If last object on a demux
-	private TweenToggleDemux demuxScript;		// Aux reference to demux for finish callback
+	private TweenToggleDemux demuxScript;           // Aux reference to demux for finish callback
+
+	private bool auxHideImmediatelyFlag = false;	// Flags that detects HideImmediate change
+	private float auxHideDelay;						// Backup for HideImmediately toggle
+	private float auxHideDuration;                  // Backup for HideImmediately toggle
 
 	protected void Awake(){
 		GUIRectTransform = gameObject.GetComponent<RectTransform>();
@@ -98,6 +95,26 @@ public abstract class TweenToggle : MonoBehaviour{
 		}
 	}
 
+	public void ToggleHideImmediately(bool isOn) {
+		hideImmediately = isOn;
+		if(isOn) {
+			if(auxHideImmediatelyFlag != isOn) {
+				auxHideImmediatelyFlag = isOn;
+				auxHideDelay = hideDelay;
+				auxHideDuration = hideDuration;
+				hideDelay = 0f;
+				hideDuration = 0f;
+			}
+		}
+		else {
+			if(auxHideImmediatelyFlag != isOn) {
+				auxHideImmediatelyFlag = isOn;
+				hideDelay = auxHideDelay;
+				hideDuration = auxHideDuration;
+			}
+		}
+	}
+
 	public void Show(){
 		if(inactiveWhenHidden) {
 			gameObject.SetActive(true);
@@ -119,6 +136,7 @@ public abstract class TweenToggle : MonoBehaviour{
 	}
 	
 	public void Hide(){
+		ToggleHideImmediately(hideImmediately);
 		Hide(hideDuration);
 	}
 

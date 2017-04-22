@@ -1,5 +1,5 @@
 ﻿// TweenToggle version 1.0 - http://www.pixelmetry.com/?portfolio=tween-toggle
-// Copyright (C) 2017 Wenshiang Sean Chung - Pixelmetry
+// Copyright (C) 2017 Sean Chung - Pixelmetry
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
@@ -11,9 +11,10 @@ using System.Collections;
 public class TweenToggleDemux : MonoBehaviour {
 	[Header("General Settings")]
 	[Tooltip("Should toggle be allowed while demux is already tweening?")]
-	public bool allowToggleWhileTweening = true;    // Allow for reverse tween while tweening?
+	public bool allowToggleWhileTweening = true;
 	[Tooltip("Initial state on start")]
 	public bool startsHidden = false;
+	[Tooltip("On hide call, hide all objects immediately instead of tweening")]
 	public bool hideImmediately = false;
 	[Tooltip("[OPTIONAL] Assign a canvas group to block clicks for UI behind")]
 	public CanvasGroup UIRayCastBlock;              // If this is assigned, it will attempt to block (ONLY) UI Raycasts when shown
@@ -31,13 +32,6 @@ public class TweenToggleDemux : MonoBehaviour {
 
 	private bool isMoving; // Move lock
 	public bool IsMoving { get { return isMoving; } }
-
-	void OnValidate() {
-		// Update IsUsingDemux for items inside the list
-		foreach(TweenToggle tween in tweenToggleList) {
-			tween.IsUsingDemux = true;
-		}
-	}
 
 	void Awake() {
 		isMoving = false;
@@ -125,12 +119,7 @@ public class TweenToggleDemux : MonoBehaviour {
 	private IEnumerator SetNextFrameHide() {
 		yield return 0;
 		foreach(TweenToggle tween in tweenToggleList) {
-			if(hideImmediately) {
-				//Debug.Log(" -- - - HIDE BOOLEAN TRUE");
-				// TODO Need to call last hide object last!!!!
-				tween.hideDuration = 0f;
-				tween.hideDelay = 0f;
-			}
+			tween.ToggleHideImmediately(hideImmediately);
 			tween.Hide();
 		}
 	}
@@ -143,5 +132,13 @@ public class TweenToggleDemux : MonoBehaviour {
 	public void HideSendCallback() {
 		isMoving = false;
 		onHideComplete.Invoke();
+	}
+
+	public void TestPrint1() {
+		Debug.Log("11111");
+	}
+
+	public void TestPrint2() {
+		Debug.Log("22");
 	}
 }
